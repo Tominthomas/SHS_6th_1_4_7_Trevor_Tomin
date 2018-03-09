@@ -2,6 +2,10 @@ import PIL
 import matplotlib.pyplot as plt # single use of plt is commented out
 import os.path  
 import PIL.ImageDraw            
+os.mkdir("newImgs")
+Imgs = os.listdir("directory_list")
+
+
 def frame(original_image, color, frame_width):
     """ place a frame around a  a PIL.Image
     
@@ -24,8 +28,11 @@ def frame(original_image, color, frame_width):
     drawing_layer = PIL.ImageDraw.Draw(frame_mask)
     
  # draw four rectangles to make a frame 
-    drawing_layer.rectangle((0,0,width,thickness), fill=(r,g,b,255))
-  
+    drawing_layer.rectangle((0, 0, width, thickness), fill=(r, g, b, 255)) #top
+    drawing_layer.rectangle((0, 0, thickness, height), fill=(r, g, b, 255)) # left
+    drawing_layer.rectangle((0, height, width, height-thickness), fill=(r, g, b, 255)) # bottom
+    drawing_layer.rectangle((width, 0, width-thickness, height), fill=(r, g, b, 255)) #right
+    draw.text((imgW-290, imgH-60), "General Motors", (255,255,255), font=font)
     # Make the new image, starting with all transparent
     result = original_image.copy()
     result.paste(frame_mask, (0,0), mask=frame_mask)
@@ -57,7 +64,7 @@ def get_images(directory=None):
             pass # do nothing with errors tying to open non-images
     return image_list, file_list
 
-def frame_all_images(directory=None,color=(255,0,0), width=0.10):
+def frame_all_images(directory=None,color=(0,165,0255), width=0.10):
     """ Saves a modfied version of each image in directory.
     
     Uses current directory if no directory is specified. 
@@ -65,6 +72,7 @@ def frame_all_images(directory=None,color=(255,0,0), width=0.10):
     New image files are of type PNG and have transparent rounded corners.
     """
     
+
     if directory == None:
         directory = os.getcwd() # Use working directory if unspecified
         
@@ -90,4 +98,4 @@ def frame_all_images(directory=None,color=(255,0,0), width=0.10):
         # Save the altered image, suing PNG to retain transparency
         new_image_filename = os.path.join(new_directory, filename + '.png')
         new_image.save(new_image_filename) 
-   
+        

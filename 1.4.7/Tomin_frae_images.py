@@ -1,35 +1,24 @@
 import PIL
 import matplotlib.pyplot as plt # single use of plt is commented out
 import os.path  
-import PIL.ImageDraw            
-def frame(original_image, color, frame_width):
-    """ place a frame around a  a PIL.Image
+import PIL.ImageDraw 
+
+           
+def pasting(original_image):
     
-    original_image must be a PIL.Image
-    Returns a new PIL.Image with a frame, where
-    0 < frame width < 1
-    is the frame width as a portion of the shorter dimension of original_image
-    """
-    #set the width of the frame
-    width, height = original_image.size
-    thickness = int(frame_width * min(width, height)) # thickeness in pixels
-    
-    ###
-    #create a mask
-    ###
-    
-    #start with alpha=0 mask
-    r, g, b = color
-    frame_mask = PIL.Image.new('RGBA', (width, height), (0,0,0,0))
-    drawing_layer = PIL.ImageDraw.Draw(frame_mask)
-    
- # draw four rectangles to make a frame 
-    drawing_layer.rectangle((0,0,width,thickness), fill=(r,g,b,255))
-  
     # Make the new image, starting with all transparent
     result = original_image.copy()
-    result.paste(frame_mask, (0,0), mask=frame_mask)
-    return result
+    design = PIL.Image.open(os.path.join(os.getcwd(), 'download.png'))
+    
+    width, height = design.size
+    
+    use_decorative_frame = True
+    if use_decorative_frame: 
+       # frame_pic = PIL.Image.open(os.path.join(os.getcwd(), 'frame.jpg'))
+        custom_img =result.resize((65,100))
+        
+        design.paste(custom_img, (width/2,height/9)) # These are the coordinates you need to change
+    return design
     
 def get_images(directory=None):
     """ Returns PIL.Image objects for all the images in directory.
@@ -57,7 +46,7 @@ def get_images(directory=None):
             pass # do nothing with errors tying to open non-images
     return image_list, file_list
 
-def frame_all_images(directory=None,color=(255,0,0), width=0.10):
+def paste_all_images(directory=None):
     """ Saves a modfied version of each image in directory.
     
     Uses current directory if no directory is specified. 
@@ -69,25 +58,35 @@ def frame_all_images(directory=None,color=(255,0,0), width=0.10):
         directory = os.getcwd() # Use working directory if unspecified
         
     # Create a new directory 'modified'
-    new_directory = os.path.join(directory, 'modified')
+    new_directory = os.path.join(directory, 'framed1')
     try:
         os.mkdir(new_directory)
     except OSError:
         pass # if the directory already exists, proceed  
     
-    # Load all the images
+    #load all the images
     image_list, file_list = get_images(directory)  
 
-    # Go through the images and save modified versions
+    #go through the images and save modified versions
     for n in range(len(image_list)):
         # Parse the filename
-        print n
         filename, filetype = file_list[n].split('.')
         
-        # Round the corners with default percent of radius
-        new_image = frame(image_list[n],color,width)
-        
-        # Save the altered image, suing PNG to retain transparency
+        # Round the corners with radius = 30% of short side
+        new_image = pasting(image_list[n])
+        #save the altered image, suing PNG to retain transparency
         new_image_filename = os.path.join(new_directory, filename + '.png')
-        new_image.save(new_image_filename) 
-   
+        new_image.save(new_image_filename)  
+    
+
+    
+        
+    
+    
+
+
+
+
+
+
+    
